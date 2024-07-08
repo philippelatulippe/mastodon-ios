@@ -487,7 +487,7 @@ extension ComposeContentViewModel {
             .flatMap { settings in
                 if let settings {
                     return settings.publisher(for: \.recentLanguages, options: .initial).eraseToAnyPublisher()
-                } else if let code = Locale.current.language.languageCode?.identifier {
+                } else if let code = Locale.current.languageCode {
                     return Just([code]).eraseToAnyPublisher()
                 }
                 return Just([]).eraseToAnyPublisher()

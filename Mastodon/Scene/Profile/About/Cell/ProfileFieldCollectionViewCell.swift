@@ -169,6 +169,24 @@ final class ProfileFieldCollectionViewCell: UICollectionViewCell {
     }
 }
 
+// UIMenuController boilerplate
+@available(iOS, deprecated: 16, message: "Can be removed when target version is >=16 -- boilerplate to maintain compatibility with UIMenuController")
+extension ProfileFieldCollectionViewCell {
+    override var canBecomeFirstResponder: Bool { true }
+
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        if action == #selector(dismissVerifiedMenu) {
+            return true
+        }
+
+        return super.canPerformAction(action, withSender: sender)
+    }
+
+    @objc public func dismissVerifiedMenu() {
+        UIMenuController.shared.hideMenu()
+    }
+}
+
 // MARK: - MetaLabelDelegate
 extension ProfileFieldCollectionViewCell: MetaLabelDelegate {
     func metaLabel(_ metaLabel: MetaLabel, didSelectMeta meta: Meta) {

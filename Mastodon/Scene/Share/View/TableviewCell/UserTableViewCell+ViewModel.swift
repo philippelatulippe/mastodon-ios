@@ -60,7 +60,11 @@ extension UserTableViewCellDelegate where Self: ViewControllerWithDependencies &
 
             // this is a dirty hack to give the backend enough time to process the relationship-change
             // Otherwise the relationship might still be `pending`
-            try await Task.sleep(for: .seconds(1))
+            if #available(iOS 16, *) {
+                try await Task.sleep(for: .seconds(1))
+            } else {
+                try await Task.sleep(nanoseconds: .second * 1)
+            }
 
             let relationship = try await self.context.apiService.relationship(forAccounts: [account], authenticationBox: authContext.mastodonAuthenticationBox).value.first
 

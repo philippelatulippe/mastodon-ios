@@ -18,7 +18,7 @@ struct MastodonRegisterView: View {
     @State var usernameRightViewWidth: CGFloat = 300
     
     var body: some View {
-        ScrollView(.vertical) {
+        let scrollView = ScrollView(.vertical) {
             let margin: CGFloat = 16
             VStack(alignment: .leading, spacing: 16) {
                 TextField(L10n.Scene.Register.Input.DisplayName.placeholder.localizedCapitalized, text: $viewModel.name)
@@ -76,7 +76,7 @@ struct MastodonRegisterView: View {
             }
             .padding(.horizontal, margin)
             .padding(.bottom, 32)
-            
+
             // Email & Password & Password hint
             VStack(alignment: .leading, spacing: margin) {
                 SecureField(L10n.Scene.Register.Input.Password.placeholder.localizedCapitalized, text: $viewModel.password)
@@ -94,7 +94,7 @@ struct MastodonRegisterView: View {
             }
             .padding(.horizontal, margin)
             .padding(.bottom, 22)
-            
+
             // Reason
             if viewModel.approvalRequired {
                 VStack(alignment: .leading, spacing: 11) {
@@ -107,7 +107,7 @@ struct MastodonRegisterView: View {
                 }
                 .padding(.horizontal, margin)
             }
-            
+
             Spacer()
                 .frame(minHeight: viewModel.bottomPaddingHeight)
         }
@@ -117,7 +117,11 @@ struct MastodonRegisterView: View {
                     viewModel.endEditing.send()
                 }
         )
-        .scrollDismissesKeyboard(.interactively)
+        if #available(iOS 16.0, *) {
+            scrollView.scrollDismissesKeyboard(.interactively)
+        } else {
+            scrollView
+        }
     }
     
     struct FormTextFieldModifier: ViewModifier {

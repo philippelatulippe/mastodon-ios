@@ -36,7 +36,7 @@ public enum Persistence {
 
     public func filepath(baseURL: URL) -> URL {
         baseURL
-            .appending(path: filename)
+            .appendingPathComponent(filename)
             .appendingPathExtension("json")
     }
 }

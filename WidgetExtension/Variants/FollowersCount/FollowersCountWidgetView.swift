@@ -164,6 +164,5 @@ struct FollowersCountWidgetView: View {
                     .truncationMode(.tail)
             }
         }
-        .widgetBackground(AccessoryWidgetBackground())
     }
 }

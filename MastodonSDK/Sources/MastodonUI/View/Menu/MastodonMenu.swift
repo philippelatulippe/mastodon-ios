@@ -17,12 +17,23 @@ public enum MastodonMenu {
     public struct Submenu {
         public let actions: [Action]
         public let options: UIMenu.Options
-        public let preferredElementSize: UIMenu.ElementSize
 
+        private var _preferredElementSize: Any? = nil
+        @available(iOS 16, *)
+        public var preferredElementSize: UIMenu.ElementSize  {
+            return _preferredElementSize as! UIMenu.ElementSize
+        }
+
+        @available(iOS 16, *)
         public init(actions: [Action], options: UIMenu.Options = .displayInline, preferredElementSize: UIMenu.ElementSize = .large) {
             self.actions = actions
             self.options = options
-            self.preferredElementSize = preferredElementSize
+            self._preferredElementSize = preferredElementSize
+        }
+
+        public init(actions: [Action], options: UIMenu.Options = .displayInline) {
+            self.actions = actions
+            self.options = options
         }
     }
 
@@ -39,7 +50,9 @@ public enum MastodonMenu {
                 submenuChildren.append(element)
             }
             let submenu = UIMenu(options: item.options, children: submenuChildren)
-            submenu.preferredElementSize = item.preferredElementSize
+            if #available(iOS 16, *) {
+                submenu.preferredElementSize = item.preferredElementSize
+            }
             children.append(submenu)
         }
         

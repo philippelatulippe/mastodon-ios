@@ -80,7 +80,7 @@ struct MastodonServerRulesView: View {
                         } label: {
                             Text(L10n.Scene.ServerRules.Button.confirm)
                                 .frame(maxWidth: .infinity)
-                                .bold()
+                                .font(.body.bold())
                         }
                         .buttonStyle(.borderedProminent)
                     }

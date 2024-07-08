@@ -52,7 +52,7 @@ public struct LanguagePicker: View {
         let locales = Locale.availableIdentifiers.map(Locale.init(identifier:))
         var languages: [String: Language] = [:]
         for locale in locales {
-            if let code = locale.language.languageCode?.identifier,
+            if let code = locale.languageCode,
                let endonym = locale.localizedString(forLanguageCode: code),
                let exonym = Locale.current.localizedString(forLanguageCode: code) {
                 // don’t overwrite the “base” language
@@ -75,6 +75,9 @@ public struct LanguagePicker: View {
                     return Text("")
                 }()
                 Button(action: {
+                    selectedLanguage = lang.id
+                    onSelect(lang.id)
+                }) {
                     if #available(iOS 16.0, *) {
                         ViewThatFits(in: .horizontal) {
                             HStack(spacing: 0) { endonym; Text(" "); exonym }
@@ -84,14 +87,6 @@ public struct LanguagePicker: View {
                         // less optimal because if you’re using an LTR language, RTL languages
                         // will read as “ ([exonym])[endonym]” (and vice versa in RTL locales)
                         Text("\(endonym)\(exonym)")
-                    }
-                }
-                .tint(.primary)
-                .accessibilityLabel(Text(lang.label))
-            }.toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(L10n.Common.Controls.Actions.cancel) {
-                        dismiss()
                     }
                 }
                 .tint(.primary)

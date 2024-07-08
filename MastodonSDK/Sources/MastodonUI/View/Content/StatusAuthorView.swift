@@ -160,14 +160,21 @@ extension StatusAuthorView {
     public func setupAuthorMenu(menuContext: AuthorMenuContext) -> (UIMenu, [UIAccessibilityCustomAction]) {
         var items: [MastodonMenu.Submenu] = []
 
-        items.append(MastodonMenu.Submenu(
-            actions: [
-                .boostStatus(.init(isBoosted: menuContext.isBoosted)),
-                .favoriteStatus(.init(isFavorited: menuContext.isFavorited)),
-                .bookmarkStatus(.init(isBookmarked: menuContext.isBookmarked)),
-            ],
-            preferredElementSize: .medium
-        ))
+        let submenuActions = [
+            MastodonMenu.Action.boostStatus(.init(isBoosted: menuContext.isBoosted)),
+            .favoriteStatus(.init(isFavorited: menuContext.isFavorited)),
+            .bookmarkStatus(.init(isBookmarked: menuContext.isBookmarked)),
+        ]
+        if #available(iOS 16, *) {
+            items.append(MastodonMenu.Submenu(
+                actions: submenuActions,
+                preferredElementSize: .medium
+            ))
+        } else {
+            items.append(MastodonMenu.Submenu(
+                actions: submenuActions
+            ))
+        }
 
         if menuContext.isMyself {
             items.append(MastodonMenu.Submenu(actions: [.editStatus]))

@@ -12,8 +12,6 @@ import VisionKit
 
 final class MediaPreviewImageView: UIScrollView {
     
-    private static let imageAnalyzer = ImageAnalyzer()
-    
     let imageView: FLAnimatedImageView = {
         let imageView = FLAnimatedImageView()
         imageView.contentMode = .scaleAspectFit
