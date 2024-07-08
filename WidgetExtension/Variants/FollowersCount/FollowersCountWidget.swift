@@ -55,7 +55,10 @@ struct FollowersCountEntry: TimelineEntry {
 
 struct FollowersCountWidget: Widget {
     private var availableFamilies: [WidgetFamily] {
-        return [.systemSmall, .accessoryRectangular, .accessoryCircular]
+        if #available(iOS 16, *) {
+            return [.systemSmall, .accessoryRectangular, .accessoryCircular]
+        }
+        return [.systemSmall]
     }
 
     var body: some WidgetConfiguration {

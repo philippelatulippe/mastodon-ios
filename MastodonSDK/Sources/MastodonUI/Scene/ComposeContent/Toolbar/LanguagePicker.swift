@@ -75,19 +75,23 @@ public struct LanguagePicker: View {
                     return Text("")
                 }()
                 Button(action: {
-                    selectedLanguage = lang.id
-                    onSelect(lang.id)
-                }) {
-                    HStack {
+                    if #available(iOS 16.0, *) {
                         ViewThatFits(in: .horizontal) {
                             HStack(spacing: 0) { endonym; Text(" "); exonym }
                             VStack(alignment: .leading) { endonym; exonym }
                         }
-                        if lang.id == selectedLanguage {
-                        Spacer()
-                          Image(systemName: "checkmark")
-                                .foregroundStyle(Asset.Colors.Brand.blurple.swiftUIColor)
-                        }
+                    } else {
+                        // less optimal because if you’re using an LTR language, RTL languages
+                        // will read as “ ([exonym])[endonym]” (and vice versa in RTL locales)
+                        Text("\(endonym)\(exonym)")
+                    }
+                }
+                .tint(.primary)
+                .accessibilityLabel(Text(lang.label))
+            }.toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(L10n.Common.Controls.Actions.cancel) {
+                        dismiss()
                     }
                 }
                 .tint(.primary)

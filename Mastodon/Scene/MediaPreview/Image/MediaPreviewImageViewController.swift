@@ -40,7 +40,9 @@ extension MediaPreviewImageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        previewImageView.liveTextInteraction.delegate = self
+        if #available(iOS 16.0, *) {
+            previewImageView.liveTextInteraction.delegate = self
+        }
         previewImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(previewImageView)
         NSLayoutConstraint.activate([
@@ -88,13 +90,16 @@ extension MediaPreviewImageViewController {
 
 extension MediaPreviewImageViewController: MediaPreviewPage {
     func setShowingChrome(_ showingChrome: Bool) {
-        UIView.animate(withDuration: 0.3) {
-            self.previewImageView.liveTextInteraction.setSupplementaryInterfaceHidden(!showingChrome, animated: true)
+        if #available(iOS 16.0, *) {
+            UIView.animate(withDuration: 0.3) {
+                self.previewImageView.liveTextInteraction.setSupplementaryInterfaceHidden(!showingChrome, animated: true)
+            }
         }
     }
 }
 
 // MARK: - ImageAnalysisInteractionDelegate
+@available(iOS 16.0, *)
 extension MediaPreviewImageViewController: ImageAnalysisInteractionDelegate {
     func presentingViewController(for interaction: ImageAnalysisInteraction) -> UIViewController? {
         self
@@ -104,14 +109,18 @@ extension MediaPreviewImageViewController: ImageAnalysisInteractionDelegate {
 // MARK: - UIGestureRecognizerDelegate
 extension MediaPreviewImageViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        let location = touch.location(in: previewImageView.imageView)
-        // for tap gestures, only items that can be tapped are relevant
-        if gestureRecognizer is UITapGestureRecognizer {
-            return !previewImageView.liveTextInteraction.hasSupplementaryInterface(at: location)
-            && !previewImageView.liveTextInteraction.hasDataDetector(at: location)
+        if #available(iOS 16.0, *) {
+            let location = touch.location(in: previewImageView.imageView)
+            // for tap gestures, only items that can be tapped are relevant
+            if gestureRecognizer is UITapGestureRecognizer {
+                return !previewImageView.liveTextInteraction.hasSupplementaryInterface(at: location)
+                    && !previewImageView.liveTextInteraction.hasDataDetector(at: location)
+            } else {
+                // for long press, block out everything
+                return !previewImageView.liveTextInteraction.hasInteractiveItem(at: location)
+            }
         } else {
-            // for long press, block out everything
-            return !previewImageView.liveTextInteraction.hasInteractiveItem(at: location)
+            return true
         }
     }
 }
@@ -120,8 +129,10 @@ extension MediaPreviewImageViewController: UIGestureRecognizerDelegate {
 extension MediaPreviewImageViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
 
-        if previewImageView.liveTextInteraction.hasInteractiveItem(at: previewImageView.imageView.convert(location, from: previewImageView)) {
-            return nil
+        if #available(iOS 16.0, *) {
+            if previewImageView.liveTextInteraction.hasInteractiveItem(at: previewImageView.imageView.convert(location, from: previewImageView)) {
+                return nil
+            }
         }
 
         
